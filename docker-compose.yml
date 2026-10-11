@@ -1,0 +1,44 @@
+
+services:
+  mlflow:
+    image: python:3.11-slim
+    container_name: churn-mlflow
+    working_dir: /mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow.db:/mlflow/mlflow.db
+      - ./mlartifacts:/mlflow/mlartifacts
+      - ./mlruns:/mlflow/mlruns
+    command:
+      - sh
+      - -c
+      - >
+        pip install --no-cache-dir mlflow==3.16.1 scikit-learn==1.9.1 skops &&
+        mlflow server
+        --host 0.0.0.0
+        --port 5000
+        --backend-store-uri sqlite:////mlflow/mlflow.db
+        --serve-artifacts
+        --default-artifact-root mlflow-artifacts:/
+        --allowed-hosts "localhost:*,127.0.0.1:*,mlflow:*,host.docker.internal:5000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: churn-api-compose
+    ports:
+      - "8000:8000"
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+    depends_on:
+      mlflow:
+        condition: service_healthy

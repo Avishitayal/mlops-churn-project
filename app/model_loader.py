@@ -1,0 +1,24 @@
+import mlflow
+
+from app.config import (
+    MLFLOW_TRACKING_URI,
+    MODEL_NAME,
+    MODEL_ALIAS,
+)
+
+
+def load_model():
+
+    mlflow.set_tracking_uri(
+        MLFLOW_TRACKING_URI
+    )
+
+    model_uri = (
+        f"models:/{MODEL_NAME}@{MODEL_ALIAS}"
+    )
+
+    model = mlflow.sklearn.load_model(
+        model_uri
+    )
+
+    return model
