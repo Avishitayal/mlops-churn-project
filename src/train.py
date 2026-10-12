@@ -41,6 +41,11 @@ def register_if_better(model_uri, run_id, candidate_f1):
 
         champion_f1 = champion_run.data.metrics.get("f1")
 
+        if champion_f1 is None:
+            print("\nCurrent champion does not have an F1 metric.")
+            print("Cannot safely compare candidate against champion.")
+            return
+
         print(f"\nCurrent champion F1: {champion_f1:.4f}")
         print(f"Candidate model F1: {candidate_f1:.4f}")
 
@@ -198,7 +203,7 @@ def main():
         # Model parameters
         # -------------------------
 
-        n_estimators = 300
+        n_estimators = 350
         max_depth = 12
         min_samples_split = 5
         min_samples_leaf = 2

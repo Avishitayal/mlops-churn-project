@@ -5,7 +5,7 @@ from preprocessing import create_preprocessor
 
 
 def create_model_pipeline(
-    n_estimators=100,
+    n_estimators=150,
     max_depth=None,
     min_samples_split=2,
     min_samples_leaf=1,
