@@ -20,10 +20,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Download champion model
+        run: |
+          curl -L \
+            -o champion-model.zip \
+            https://github.com/Avishitayal/mlops-churn-project/releases/download/model-v1/champion-model.zip
+
+          mkdir -p models/champion
+          unzip -q champion-model.zip -d models/champion
+
+          ls -lh models/champion
+
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
 
       - name: Install dependencies
         run: |
